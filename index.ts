@@ -1,40 +1,110 @@
-export { discBreadcrumbSegments } from "./breadcrumbs";
+// PORTA PÚBLICA do plugin Testes (API v1) — o único ponto por onde outro plugin (ex: vagas) conversa
+// com este via importActivePluginBarrel("tests"). Regras de consumo em docs/api-publica.md:
+// consumir, nunca copiar nem alterar; a autorização das funções *External é de quem chama.
 
-export { submitDiscReportHandler as submitDiscReport } from "./features/submit-disc-report/handler";
-export { claimDiscReportHandler as claimDiscReport } from "./features/claim-disc-report/handler";
-export { getDiscReportHandler as getDiscReport } from "./features/get-disc-report/handler";
-export { listMyDiscReportsHandler as listMyDiscReports } from "./features/list-my-disc-reports/handler";
-export { createDiscTeamHandler as createDiscTeam } from "./features/create-disc-team/handler";
-export { getDiscTeamHandler as getDiscTeam } from "./features/get-disc-team/handler";
-export { listMyDiscTeamsHandler as listMyDiscTeams } from "./features/list-my-disc-teams/handler";
-export { createDiscInstanceHandler as createDiscInstance } from "./features/create-disc-instance/handler";
-// Sem gate de sessão — pra outro plugin (ex: vagas) criar uma instância em nome de um fluxo
-// anônimo, com redirectUrl próprio. Ver comentário em features/create-disc-instance/service.ts.
-export { createDiscInstance as createDiscInstanceExternal } from "./features/create-disc-instance/service";
-export { getDiscInstanceBySlugHandler as getDiscInstanceBySlug } from "./features/get-disc-instance-by-slug/handler";
-export { listInstanceReportsHandler as listInstanceReports } from "./features/list-instance-reports/handler";
-// BYPASS de ownership — só pra instância criada via createDiscInstanceExternal. Ver comentário em
-// features/list-instance-reports/service.ts.
-export { listInstanceReportsExternal } from "./features/list-instance-reports/service";
-export { listTeamInstancesHandler as listTeamInstances } from "./features/list-team-instances/handler";
+export const TESTS_API_VERSION = "1.0.0";
 
-export { DISC_QUESTIONS, DISC_HOWTO, DISC_VALUES, describeDiscProfile } from "./shared/disc-engine/questions";
-export { scoreDisc } from "./shared/disc-engine/score-disc";
-export { shuffleInPlace } from "./shared/disc-engine/shuffle";
+export { testsBreadcrumbSegments } from "./breadcrumbs";
 
-export type { DiscReportRecord, DiscTeamRecord, DiscTeamMemberRecord, DiscInstanceRecord } from "./contracts/types";
-export type { SubmitDiscReportInput, SubmitDiscReportResult } from "./features/submit-disc-report/types";
-export type { ClaimDiscReportInput, ClaimDiscReportResult } from "./features/claim-disc-report/types";
-export type { GetDiscReportResult, DiscReportView } from "./features/get-disc-report/types";
-export type { ListMyDiscReportsResult, MyDiscReportSummary } from "./features/list-my-disc-reports/types";
-export type { CreateDiscTeamInput, CreateDiscTeamResult } from "./features/create-disc-team/types";
-export type { GetDiscTeamResult } from "./features/get-disc-team/types";
-export type { ListMyDiscTeamsResult, MyDiscTeamSummary } from "./features/list-my-disc-teams/types";
+// --- Módulos (catálogo e ativação) ---
+export { listActiveModulesHandler as listActiveTestModules, listAllModulesHandler as listAllTestModules } from "./features/list-modules/handler";
+export { setModuleEnabledHandler as setTestModuleEnabled } from "./features/set-module-enabled/handler";
+
+// --- Aplicações (instâncias com link) ---
+export { createInstanceHandler as createTestInstance } from "./features/create-instance/handler";
+// Sem gate de sessão — para outro plugin criar uma aplicação em nome de um fluxo sem login (ex:
+// candidatura em vagas), com redirectUrl próprio. Idempotente por externalRef.
+export { createInstance as createTestInstanceExternal } from "./features/create-instance/service";
+export { getInstanceBySlugHandler as getTestInstanceBySlug } from "./features/get-instance-by-slug/handler";
+export { listTeamInstancesHandler as listTeamTestInstances } from "./features/list-team-instances/handler";
+export { setInstanceClosedHandler as setTestInstanceClosed } from "./features/set-instance-closed/handler";
+
+// --- Respostas e resultados ---
+export { submitAttemptHandler as submitTestAttempt } from "./features/submit-attempt/handler";
+export { getResultHandler as getTestResult } from "./features/get-result/handler";
+// BYPASS de acesso — só para plugin consumidor que já checou a própria permissão (ver service).
+export { getResultExternal as getTestResultExternal } from "./features/get-result/service";
+export { claimResultHandler as claimTestResult } from "./features/claim-result/handler";
+export { listMyResultsHandler as listMyTestResults } from "./features/list-my-results/handler";
+export { listInstanceResultsHandler as listTestInstanceResults } from "./features/list-instance-results/handler";
+// BYPASS de ownership — só para plugin consumidor que criou a aplicação (ver service).
+export { listInstanceResultsExternal as listTestInstanceResultsExternal } from "./features/list-instance-results/service";
+export { reopenResultHandler as reopenTestResult } from "./features/reopen-result/handler";
+export { compareInstancesHandler as compareTestInstances } from "./features/compare-instances/handler";
+export { exportInstanceResultsHandler as exportTestInstanceResults } from "./features/export-instance-results/handler";
+
+// --- Conteúdo editável (módulos authored) — administradores: permissão tests.content.manage ---
+export {
+  createQuestionSetHandler as createTestQuestionSet,
+  createStarterQuestionSetHandler as createStarterTestQuestionSet,
+  deleteQuestionSetHandler as deleteTestQuestionSet,
+  duplicateQuestionSetHandler as duplicateTestQuestionSet,
+  getQuestionSetHandler as getTestQuestionSet,
+  listQuestionSetsHandler as listTestQuestionSets,
+  publishQuestionSetHandler as publishTestQuestionSet,
+  saveDraftHandler as saveTestQuestionSetDraft,
+  setDefaultQuestionSetHandler as setDefaultTestQuestionSet,
+} from "./features/manage-question-sets/handler";
+export { listPublishedSetsHandler as listPublishedTestQuestionSets } from "./features/list-published-sets/handler";
+
+// --- Execução do teste (perguntas sem gabarito, tentativa com tempo limite) e agregado ---
+export { getRunContentHandler as getTestRunContent } from "./features/get-run-content/handler";
+export { startAttemptHandler as startTestAttempt } from "./features/start-attempt/handler";
+export { getInstanceAggregateHandler as getTestInstanceAggregate } from "./features/get-instance-aggregate/handler";
+// BYPASS de acesso — só para plugin consumidor que já checou a própria permissão (ver service).
+export { getInstanceAggregateExternal as getTestInstanceAggregateExternal } from "./features/get-instance-aggregate/service";
+
+// --- Equipes ---
+export { createTeamHandler as createTestTeam } from "./features/create-team/handler";
+export { getTeamHandler as getTestTeam } from "./features/get-team/handler";
+export { listMyTeamsHandler as listMyTestTeams } from "./features/list-my-teams/handler";
+
+// --- Compatibilidade com o antigo @venore/plugin-disc (vagas) — ver compat/disc.ts ---
+export { getReportFooterText as getTestReportFooterText } from "./platform/report/settings";
+export { createDiscInstanceExternal, listInstanceReportsExternal, getDiscReport } from "./compat/disc";
+
+// --- Tipos ---
+export type * from "./platform/content/types";
 export type {
-  CreateDiscInstanceInput,
-  CreateDiscInstanceCommand,
-  CreateDiscInstanceResult,
-} from "./features/create-disc-instance/types";
-export type { GetDiscInstanceBySlugResult, DiscInstanceInviteView } from "./features/get-disc-instance-by-slug/types";
-export type { ListInstanceReportsResult, InstanceReportSummary } from "./features/list-instance-reports/types";
-export type { ListTeamInstancesResult, TeamInstanceSummary } from "./features/list-team-instances/types";
+  CreateQuestionSetResult,
+  DeleteResult as DeleteQuestionSetResult,
+  GetQuestionSetResult,
+  ListQuestionSetsResult,
+  PublishResult as PublishQuestionSetResult,
+  QuestionSetDetail,
+  QuestionSetSummary,
+  SaveDraftResult,
+} from "./features/manage-question-sets/types";
+export type { GetRunContentResult } from "./features/get-run-content/types";
+export type { AttemptClock, StartAttemptInput, StartAttemptResult } from "./features/start-attempt/types";
+export type { GetInstanceAggregateResult, InstanceAggregateView } from "./features/get-instance-aggregate/types";
+export type { QuestionAggregate } from "./platform/content/aggregate";
+export type { PublishedSetOption } from "./features/list-published-sets/handler";
+export type {
+  IdentityMode,
+  TestInstanceRecord,
+  TestResultIdentity,
+  TestResultRecord,
+  TestResultView,
+  TestTeamMemberRecord,
+  TestTeamMemberRole,
+  TestTeamRecord,
+} from "./contracts/types";
+export type { ModuleSummary, ListModulesResult } from "./features/list-modules/types";
+export type { SetModuleEnabledInput, SetModuleEnabledResult } from "./features/set-module-enabled/types";
+export type { CreateInstanceCommand, CreateInstanceInput, CreateInstanceResult } from "./features/create-instance/types";
+export type { InstanceInviteView, GetInstanceBySlugResult } from "./features/get-instance-by-slug/types";
+export type { TeamInstanceSummary, ListTeamInstancesResult } from "./features/list-team-instances/types";
+export type { SubmitAttemptInput, SubmitAttemptOutcome, SubmitAttemptResult } from "./features/submit-attempt/types";
+export type { GetResultResult } from "./features/get-result/types";
+export type { ClaimResultInput, ClaimResultResult } from "./features/claim-result/types";
+export type { MyResultSummary, ListMyResultsResult } from "./features/list-my-results/types";
+export type { InstanceResultSummary, InstanceResultsView, ListInstanceResultsResult } from "./features/list-instance-results/types";
+export type { ReopenResultInput, ReopenResultResult } from "./features/reopen-result/types";
+export type { SetInstanceClosedInput, SetInstanceClosedResult } from "./features/set-instance-closed/types";
+export type { CompareInstancesView, CompareInstancesResult } from "./features/compare-instances/types";
+export type { Comparison, ComparisonRow } from "./features/compare-instances/match";
+export type { ExportInstanceResultsView, ExportInstanceResultsResult } from "./features/export-instance-results/types";
+export type { CreateTeamInput, CreateTeamResult } from "./features/create-team/types";
+export type { GetTeamResult, TeamView } from "./features/get-team/types";
+export type { ListMyTeamsResult, MyTeamSummary } from "./features/list-my-teams/types";

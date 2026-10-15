@@ -2,8 +2,12 @@ import type { OperationResult } from "@venore/plugin-sdk";
 
 export type TeamInstanceSummary = {
   id: string;
-  environmentLabel: string;
+  testId: string;
+  title: string | null;
+  contextLabel: string;
   shareSlug: string;
+  closed: boolean;
+  responseCount: number;
   createdAt: Date;
 };
 
