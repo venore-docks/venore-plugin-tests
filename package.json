@@ -1,6 +1,6 @@
 {
   "name": "@venore/plugin-tests",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Plataforma de testes (DISC, Big Five, Conhecimentos, Clima…) — individual ou em equipe, em módulos que o administrador liga e desliga. Sucessora do plugin-disc / NestPro.",
   "private": true,
   "type": "module",

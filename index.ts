@@ -60,6 +60,9 @@ export { getTeamHandler as getTestTeam } from "./features/get-team/handler";
 export { listMyTeamsHandler as listMyTestTeams } from "./features/list-my-teams/handler";
 
 // --- Compatibilidade com o antigo @venore/plugin-disc (vagas) — ver compat/disc.ts ---
+// Relatório embutível (folha do módulo + impressão A4 isolada). Também sai pelo barrel para o consumidor
+// com dependência OPCIONAL (importActivePluginBarrel) usar sem import estático do pacote.
+export { TestResultReport } from "./platform/report/test-result-report";
 export { getReportFooterText as getTestReportFooterText } from "./platform/report/settings";
 export { createDiscInstanceExternal, listInstanceReportsExternal, getDiscReport } from "./compat/disc";
 

@@ -12,7 +12,7 @@ export const testsManifest: PluginManifest = {
   manifestVersion: "1.0.0",
   key: "tests",
   name: "Testes",
-  version: "0.3.0",
+  version: "0.3.1",
   description:
     "Plataforma de testes em módulos (DISC, Big Five, Conhecimentos, Clima) — aplicação individual ou em equipe, com relatório visual e impressão em A4. Sucessora do plugin DISC / NestPro.",
   compatibility: { coreVersion: ">=2.0.0 <3.0.0" },

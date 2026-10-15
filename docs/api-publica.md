@@ -10,7 +10,7 @@ O único ponto de entrada para outro plugin (ex.: **vagas**) é o barrel do paco
    (`{ pluginKey: "tests", type: "optional" }` quando o consumidor funciona sem o Testes). Nunca
    importar arquivo interno do plugin.
 2. **Consumir, não copiar.** Mostre resultados com o componente embutível
-   (`@venore/plugin-tests/report-view` → `TestResultReport`, passando `footerText={await getTestReportFooterText()}` para usar o rodapé configurado no admin), que já traz a folha do módulo, a
+   (`TestResultReport`, exportado pelo barrel — com dependência opcional use `barrel.TestResultReport`; também em `@venore/plugin-tests/report-view` — passando `footerText={await getTestReportFooterText()}` para usar o rodapé configurado no admin), que já traz a folha do módulo, a
    impressão em A4 e o isolamento do site. **Não duplique gráficos, relatório nem impressão.**
 3. **O consumidor não altera** o plugin nem os resultados: só cria aplicações e lê resultados.
 4. **A autorização é do consumidor.** As funções `*External` ignoram sessão e papel de equipe — quem
@@ -23,8 +23,8 @@ O único ponto de entrada para outro plugin (ex.: **vagas**) é o barrel do paco
    precisar do resultado (`TestResultView.identity`).
 7. **Compatibilidade.** Mudança incompatível na API sobe a **versão maior** de `TESTS_API_VERSION` e
    vem com aviso aos consumidores. `createDiscInstanceExternal`, `listInstanceReportsExternal` e
-   `getDiscReport` (em `compat/disc.ts`) existem **só** para o vagas atual; não ganham recursos
-   novos.
+   `getDiscReport` (em `compat/disc.ts`) são legado do antigo plugin DISC: o vagas já usa a API
+   genérica, então só ficam para versões antigas do vagas; não ganham recursos novos.
 
 ## Funções (v1)
 
